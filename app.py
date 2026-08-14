@@ -1,10 +1,11 @@
-import requests, re, io
+import requests, re, io, time
 from flask import Flask, request, jsonify
 from bs4 import BeautifulSoup
 from PIL import Image, ImageOps, ImageFilter
 
 app = Flask(__name__)
 
+# ==================== কনফিগারেশন ====================
 OCR_API_KEY = 'K88372746588957'
 BASE_URL = "https://everify.bdris.gov.bd"
 
@@ -63,7 +64,7 @@ def api_verify():
         for _ in range(3):
             solved_val = solve_captcha(session, captcha_url)
             if solved_val is not None: break
-            time.sleep(1)
+            time.sleep(1) # ১ সেকেন্ড বিরতি
 
         if solved_val is None: return jsonify({"status": 404, "message": "Captcha failed to read"}), 404
 
@@ -80,7 +81,7 @@ def api_verify():
             "status": 200, 
             "success": True, 
             "message": "Data Found",
-            "html": search_response.text
+            "html_data": search_response.text
         })
     except Exception as e:
         return jsonify({"status": 500, "message": str(e)}), 500
